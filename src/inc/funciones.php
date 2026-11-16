@@ -93,7 +93,13 @@ function filtrarMisiones(array $misiones, ?string $rango, int $oroMinimo): array
  */
 function buscarMision(array $misiones, string $id): ?array
 {
-    return null; // TODO
+    foreach ($misiones as $mision) {
+        if ($mision['id'] === $id) {
+            return $mision;
+        }
+    }
+
+    return null;
 }
 
 /**
@@ -102,7 +108,17 @@ function buscarMision(array $misiones, string $id): ?array
  */
 function totalRecompensa(array $misiones, array $ids): int
 {
-    return 0; // TODO
+    $total = 0;
+
+    foreach ($ids as $id) {
+        $mision = buscarMision($misiones, $id);
+
+        if ($mision !== null) {
+            $total += $mision['recompensa'];
+        }
+    }
+
+    return $total;
 }
 
 /**

@@ -22,12 +22,22 @@ $_SESSION['zurron'] ??= [];
 
 // ---- POST: aceptar una misión --------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // TODO (Parte 2):
-    //  1. Lee $_POST['id'] y busca la misión con buscarMision().
-    //  2. Si no existe → mensajeFlash('Esa misión no existe en el tablón.')
-    //  3. Si ya está en $_SESSION['zurron'] → mensaje de aviso, sin duplicar.
-    //  4. Si no → añade el id a $_SESSION['zurron'] y mensaje de confirmación.
-    //  5. Redirige (header Location + exit) para no reenviar el formulario con F5.
+
+    $id = $_POST['id'] ?? '';
+
+    $mision = buscarMision($misiones, $id);
+
+    if ($mision === null) {
+        mensajeFlash('Esa misión no existe en el tablón.');
+    } elseif (in_array($id, $_SESSION['zurron'], true)) {
+        mensajeFlash('Esa misión ya está en tu zurrón.');
+    } else {
+        $_SESSION['zurron'][] = $id;
+        mensajeFlash('Misión añadida al zurrón.');
+    }
+
+    header('Location: tablon.php');
+    exit;
 }
 
 // ---- GET: filtros ---------------------------------------------------------
@@ -81,6 +91,15 @@ require __DIR__ . '/inc/cabecera.php';
                 <p class="oro">
                     <?= formatearOro($mision['recompensa']) ?>
                 </p>
+
+                <?php if (in_array($mision['id'], $_SESSION['zurron'], true)): ?>
+                    <p>✔ En tu zurrón</p>
+                <?php else: ?>
+                    <form method="post" action="tablon.php">
+                        <input type="hidden" name="id" value="<?= e($mision['id']) ?>">
+                        <button type="submit">Aceptar misión</button>
+                    </form>
+                <?php endif; ?>
             </article>
         <?php endforeach; ?>
     <?php else: ?>

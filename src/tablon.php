@@ -61,23 +61,30 @@ require __DIR__ . '/inc/cabecera.php';
 <p><?= count($visibles) ?> de <?= count($misiones) ?> misiones.</p>
 
 <div class="misiones">
-<?php
-/*
- * TODO (Parte 1): recorre $visibles con foreach y pinta por cada misión:
- *
- *   <article class="mision CLASE">            CLASE = claseRango(rango)
- *     <span class="rango">B · Experto</span>   rango · etiquetaRango(rango)
- *     <h2>Título</h2>
- *     <p class="nota">Zona · 3 días</p>        "1 día" en singular
- *     <p>Descripción</p>
- *     <p class="oro">650 mo</p>                formatearOro()
- *     ... botón "Aceptar misión" (Parte 2) o "✔ En tu zurrón" si ya está aceptada
- *   </article>
- *
- * Escapa con e() todo texto que venga de los datos.
- * El botón es un formulario POST con un <input type="hidden" name="id">.
- * Si no queda ninguna misión, muestra "Ninguna misión cumple el filtro."
- */
-?>
-</div>
+    <?php if (count($visibles) > 0): ?>
+        <?php foreach ($visibles as $mision): ?>
+            <article class="mision <?= claseRango($mision['rango']) ?>">
+                <span class="rango">
+                    <?= e($mision['rango']) ?> · <?= e(etiquetaRango($mision['rango'])) ?>
+                </span>
+
+                <h2><?= e($mision['titulo']) ?></h2>
+
+                <p class="nota">
+                    <?= e($mision['zona']) ?> ·
+                    <?= $mision['dias'] ?>
+                    <?= $mision['dias'] === 1 ? 'día' : 'días' ?>
+                </p>
+
+                <p><?= e($mision['descripcion']) ?></p>
+
+                <p class="oro">
+                    <?= formatearOro($mision['recompensa']) ?>
+                </p>
+            </article>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>Ninguna misión cumple el filtro.</p>
+    <?php endif; ?>
+    </div>
 <?php require __DIR__ . '/inc/pie.php'; ?>

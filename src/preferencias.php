@@ -59,6 +59,5 @@ require __DIR__ . '/inc/cabecera.php';
         Valor actual de la cookie:
         <?= e($_COOKIE[COOKIE_TEMA] ?? 'No definida') ?>
     </p>
-
 </section>
 <?php require __DIR__ . '/inc/pie.php'; ?>

@@ -77,7 +77,11 @@ function leerFlash(): ?string
  */
 function temaActual(): string
 {
-    return 'claro'; // TODO
+    $tema = $_COOKIE[COOKIE_TEMA] ?? 'claro';
+
+    return in_array($tema, TEMAS, true)
+        ? $tema
+        : 'claro';
 }
 
 /**
@@ -86,19 +90,46 @@ function temaActual(): string
  */
 function guardarTema(string $tema): void
 {
-    // TODO
+    setcookie(
+        COOKIE_TEMA,
+        $tema,
+        [
+            'expires' => time() + (365 * 24 * 60 * 60),
+            'path' => '/',
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]
+    );
 }
 
 /** Guarda el NOMBRE DE USUARIO (nunca la contraseña) 30 días en COOKIE_USUARIO. */
 function recordarUsuario(string $usuario): void
 {
-    // TODO
+    setcookie(
+        COOKIE_USUARIO,
+        $usuario,
+        [
+            'expires' => time() + (30 * 24 * 60 * 60),
+            'path' => '/',
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]
+    );
 }
 
 /** Borra la cookie COOKIE_USUARIO (pista: caducidad en el pasado). */
 function olvidarUsuario(): void
 {
-    // TODO
+    setcookie(
+        COOKIE_USUARIO,
+        '',
+        [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]
+    );
 }
 
 /**

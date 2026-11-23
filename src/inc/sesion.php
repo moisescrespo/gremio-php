@@ -47,7 +47,14 @@ function aventureroActual(): ?array
  */
 function requiereLogin(): array
 {
-    return ['id' => 0, 'usuario' => 'invitado', 'nombre' => 'Invitado', 'clase' => '—']; // TODO
+    $aventurero = aventureroActual();
+
+    if ($aventurero === null) {
+        header('Location: login.php?motivo=privado');
+        exit;
+    }
+
+    return $aventurero;
 }
 
 /** Guarda un mensaje para mostrarlo UNA vez en la siguiente página. (Dado) */
@@ -108,7 +115,31 @@ function olvidarUsuario(): void
  */
 function autenticar(PDO $pdo, string $usuario, string $clave): ?array
 {
-    return null; // TODO
+    $sql = '
+        SELECT id, usuario, nombre, clase, password_hash
+        FROM aventureros
+        WHERE usuario = :usuario
+    ';
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute([
+        'usuario' => $usuario
+    ]);
+
+    $fila = $stmt->fetch();
+
+    if ($fila === false) {
+        return null;
+    }
+
+    if (!password_verify($clave, $fila['password_hash'])) {
+        return null;
+    }
+
+    unset($fila['password_hash']);
+
+    return $fila;
 }
 
 /**
@@ -117,5 +148,23 @@ function autenticar(PDO $pdo, string $usuario, string $clave): ?array
  */
 function cerrarSesion(): void
 {
-    // TODO
+    $_SESSION = [];
+
+    if (ini_get('session.use_cookies')) {
+
+        $params = session_get_cookie_params();
+
+        setcookie(
+            session_name(),
+            '',
+            time() - 3600,
+            $params['path'],
+            $params['domain'] ?? '',
+            $params['secure'] ?? false,
+            $params['httponly'] ?? true
+        );
+    }
+
+    session_destroy();
 }
+

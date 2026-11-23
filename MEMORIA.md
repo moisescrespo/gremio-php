@@ -3,8 +3,14 @@
 **Código de alumno/a:** ______  (no pongas tu nombre)
 
 ## 1. Mi aventurero
-- Usuario que he añadido a la tabla: ______
+- Usuario que he añadido a la tabla: moises
+- Comando o pasos que he usado para generar el hash: 
 - Comando o pasos que he usado para generar el hash:
+
+He utilizado la función password_hash() de PHP.
+
+```php
+echo password_hash('Moises2026', PASSWORD_DEFAULT);
 
 ## 2. Parte 1 · match
 ¿Has puesto `default` en `etiquetaRango()`? ¿Qué pasa si llega el rango `'Z'`? ¿Por qué lo prefieres así?
@@ -25,22 +31,42 @@ Esto ocurre porque leerRangoFiltro() devuelve null cuando el rango recibido no e
 La validación se realiza utilizando in_array() para comprobar el rango y filter_var() con FILTER_VALIDATE_INT para validar la recompensa mínima.
 
 ## 4. Parte 3 · Sesión frente a cookie
-Explica con tus palabras qué guardas en `$_SESSION` y qué guardas en cookies, y por qué no al revés.
+En $_SESSION guardo los datos de la sesión actual del usuario, como:
+
+- $_SESSION['aventurero']
+- $_SESSION['zurron']
+- $_SESSION['visitas']
+- $_SESSION['entrada']
+
+En las cookies guardo:
+
+- COOKIE_TEMA
+- COOKIE_USUARIO
 
 ## 5. Parte 3 · Seguridad del login
-- ¿Qué pasa si en el usuario escribes `' OR '1'='1`? ¿Por qué?
-- ¿Para qué sirve `session_regenerate_id(true)`?
-- ¿Por qué el mensaje de error es el mismo si falla el usuario o la contraseña?
+### ¿Qué pasa si en el usuario escribes `' OR '1'='1`? ¿Por qué?
+
+No se puede iniciar sesión y aparece el mensaje "Usuario o contraseña incorrectos".
+
+Esto ocurre porque la consulta utiliza sentencias preparadas con el marcador :usuario, por lo que el contenido introducido se trata como un dato y no como parte de la consulta SQL.
+
+### ¿Para qué sirve `session_regenerate_id(true)`?
+
+Sirve para generar un nuevo identificador de sesión después del login y evitar ataques de fijación de sesión.
+
+### ¿Por qué el mensaje de error es el mismo si falla el usuario o la contraseña?
+
+Porque así no se proporciona información adicional a un posible atacante. Si se mostraran mensajes diferentes, se podría averiguar qué usuarios existen en la base de datos.
 
 ## 6. Pruebas que he hecho
 
 | Prueba | Resultado esperado | Resultado obtenido |
 |---|---|---|
 | Entrar en tablon.php sin login | Acceso como invitado | Correcto |
-| Login con contraseña mala | Pendiente de la Entrega 2 | Pendiente |
 | Aceptar la misma misión dos veces | No duplicar la misión | Correcto |
-| Cerrar sesión y volver al zurrón | Pendiente de la Entrega 2 | Pendiente |
-| Cambiar el tema y cerrar sesión | Pendiente de la Entrega 2 | Pendiente |
+| Login con contraseña mala | Usuario o contraseña incorrectos | Correcto |
+| Cerrar sesión y volver al zurrón | El zurrón se vacía | Correcto |
+| Cambiar el tema y cerrar sesión | El tema se mantiene | Correcto |
 
 ## 7. Dificultades y cómo las he resuelto
 
